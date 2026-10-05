@@ -37,14 +37,14 @@ const { factor, svd } = require("factor-js");
 
 ```html
 <script type="module">
-  import { factor } from "https://cdn.jsdelivr.net/npm/factor-js@1.0.3/+esm";
+  import { factor } from "https://cdn.jsdelivr.net/npm/factor-js@1.0.4/+esm";
 </script>
 ```
 
 **Browser (global)**
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/factor-js@1.0.3/dist/factor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/factor-js@1.0.4/dist/factor.js"></script>
 <script>
   // window.Factor.factor(...), window.Factor.svd(...)
 </script>

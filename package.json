@@ -1,6 +1,6 @@
 {
   "name": "factor-js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Factor analysis in pure JavaScript and WebAssembly",
   "main": "./dist/factor.cjs",
   "module": "./dist/factor.mjs",
