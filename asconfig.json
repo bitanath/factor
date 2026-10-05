@@ -1,0 +1,24 @@
+{
+  "extends": "assemblyscript/std/portable.json",
+  "targets": {
+    "debug": {
+      "outFile": "core/debug.wasm",
+      "textFile": "core/debug.wat",
+      "sourceMap": true,
+      "debug": true
+    },
+    "release": {
+      "outFile": "core/release.wasm",
+      "textFile": "core/release.wat",
+      "sourceMap": true,
+      "optimizeLevel": 3,
+      "shrinkLevel": 0,
+      "converge": false,
+      "noAssert": false
+    }
+  },
+  "options": {
+    "bindings": "esm",
+    "runtime": "minimal"
+  }
+}

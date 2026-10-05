@@ -1,0 +1,80 @@
+{
+  "name": "factor-js",
+  "version": "1.0.2",
+  "description": "Factor analysis in pure JavaScript and WebAssembly",
+  "main": "./dist/factor.cjs",
+  "module": "./dist/factor.mjs",
+  "types": "./dist/factor.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/factor.d.ts",
+      "require": "./dist/factor.cjs",
+      "import": "./dist/factor.mjs",
+      "default": "./dist/factor.js"
+    },
+    "./wasm": {
+      "types": "./core/release.d.ts",
+      "import": "./core/release.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "unpkg": "./dist/factor.js",
+  "jsdelivr": "./dist/factor.js",
+  "files": [
+    "dist/",
+    "core/release.js",
+    "core/release.wasm",
+    "core/release.d.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node tests/entry.js",
+    "bench": "node tests/bench.js",
+    "asbuild:debug": "asc src/index.ts --target debug",
+    "asbuild:release": "asc src/index.ts --target release",
+    "asbuild": "npm run asbuild:debug && npm run asbuild:release",
+    "build:js": "rm -rf dist && tsc --project tsconfig.json && rollup -c && rm -rf dist/js",
+    "build:all": "npm run asbuild && npm run build:js",
+    "prepublishOnly": "npm run build:all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitanath/factor-js"
+  },
+  "homepage": "https://github.com/bitanath/factor-js",
+  "bugs": {
+    "url": "https://github.com/bitanath/factor-js/issues"
+  },
+  "type": "module",
+  "author": "Bitan Nath",
+  "license": "GPL-3.0-only",
+  "keywords": [
+    "factor",
+    "analysis",
+    "factor-analysis",
+    "pfa",
+    "pca",
+    "svd",
+    "machine",
+    "learning",
+    "ml",
+    "data",
+    "wasm",
+    "webassembly",
+    "assemblyscript",
+    "typescript",
+    "dimensionality"
+  ],
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "assemblyscript": "^0.28.9",
+    "pca-js": "^2.0.6",
+    "rollup": "^4.24.0",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-dts": "^6.5.1",
+    "tslib": "^2.8.1",
+    "typescript": "^5.6.3"
+  }
+}

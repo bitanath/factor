@@ -1,0 +1,15 @@
+{
+  "extends": "assemblyscript/std/portable.json",
+  "include": [
+    "src/entry.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "outDir": "dist/js",
+    "module": "ESNext",
+    "declaration": true,
+    "declarationDir": "dist/js"
+  }
+}
