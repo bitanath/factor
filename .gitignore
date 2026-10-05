@@ -3,4 +3,9 @@ node_modules/
 __MACOSX/
 .AppleDouble
 .LSOverride
-Icon[]
+Icon?
+core/debug.*
+core/*.wat
+core/*.wasm.map
+dist/js/
+*.tgz

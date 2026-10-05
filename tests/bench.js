@@ -7,7 +7,6 @@ const PROJECT_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const js = await import(path.join(PROJECT_DIR, "dist/factor.mjs"));
 const wasm = await import(path.join(PROJECT_DIR, "core/release.js"));
 
-/** Deterministic PRNG so the benchmark is reproducible. */
 function mulberry32(seed) {
   return function () {
     seed |= 0;
@@ -100,7 +99,6 @@ console.log(
   );
 }
 
-// Correctness cross-check
 const jr = js.factor(data);
 const wr = wasm.factor(data);
 let maxDiff = 0;

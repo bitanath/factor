@@ -25,7 +25,6 @@ async function runTests() {
   console.log("JS implementation loaded:", typeof jsSvd === 'function');
   console.log("WASM implementation loaded:", typeof wasmSvd === 'function');
   
-  // Test data for no good reason 
   const testData = [
     [1.0, 2.0, 3.0],
     [4.0, 5.0, 6.0],

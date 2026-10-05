@@ -9,22 +9,18 @@ async function runTests() {
   const WASM_PATH = `${PROJECT_DIR}/core/release.js`;
   const JS_PATH = `${PROJECT_DIR}/dist/factor.mjs`;
   
-  // Load JS implementation
   const jsModule = await import(JS_PATH);
   const jsSvd = jsModule.svd;
   const jsFactor = jsModule.factor;
   
-  // Load WASM implementation
   const wasmModule = await import(`${WASM_PATH}`);
   const wasmSvd = wasmModule.svd;
   const wasmFactor = wasmModule.factor;
   
-  // Load data.csv
   const csvPath = `${PROJECT_DIR}/tests/data.csv`;
   const csvContent = fs.readFileSync(csvPath, 'utf8');
   const lines = csvContent.trim().split('\n');
   
-  // Parse CSV (use all columns including header)
   const data = lines.slice(1).map(row => {
     const cols = row.split(',');
     return cols.map(Number);
@@ -43,7 +39,6 @@ async function runTests() {
   console.log("\nWASM Factor loadings (first 3 rows, first 3 cols):");
   console.log(wasmResult.loadings.slice(0, 3).map(row => row.slice(0, 3).map(n => n.toFixed(4))));
   
-  // Compare all loadings
   let maxLoadingDiff = 0;
   for (let i = 0; i < jsResult.loadings.length; i++) {
     for (let j = 0; j < jsResult.loadings[i].length; j++) {
@@ -64,7 +59,6 @@ async function runTests() {
   
   console.log("\n=== Test 3: SVD Singular Values ===");
   
-  // Standardize data manually for SVD comparison
   const m = data.length;
   const n = data[0].length;
   
@@ -117,7 +111,6 @@ async function runTests() {
   
   console.log("\n=== Test 5: Performance Comparison ===");
   
-  // Warm up
   jsFactor(data);
   wasmFactor(data);
   

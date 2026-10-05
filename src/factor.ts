@@ -41,7 +41,6 @@ export function factor(data: Matrix): FactorResult {
   }
   const n: i32 = row0.length;
 
-  // Flatten once; all heavy work happens on contiguous buffers.
   const input: f64[] = flatten(data);
 
   const means = new Array<f64>(n);
@@ -75,9 +74,8 @@ export function factor(data: Matrix): FactorResult {
   }
 
   const result = svdFlat(standardized, m, n);
-  const V: f64[] = result.V; // n x n, row-major
+  const V: f64[] = result.V;
 
-  // Factor scores = standardized * V (equivalent to U * S given U*S*Vt = X and Vt*V = I).
   const factorScores = new Array<f64>(m * n);
   for (let i: i32 = 0; i < m; i++) {
     for (let j: i32 = 0; j < n; j++) {
@@ -89,8 +87,6 @@ export function factor(data: Matrix): FactorResult {
     }
   }
 
-  // Loadings are the correlation of each variable with each factor. Reuse two
-  // scratch columns instead of allocating per (var, factor) pair.
   const loadings = new Array<f64>(n * n);
   const variableCol = new Array<f64>(m);
   const factorCol = new Array<f64>(m);

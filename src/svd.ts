@@ -6,7 +6,6 @@ export class SVDResult {
   V!: Matrix;
 }
 
-/** Internal flat (row-major) result used between the SVD and factor routines. */
 export class FlatSVD {
   U!: f64[];
   S!: f64[];
@@ -26,11 +25,6 @@ function pythag(a: f64, b: f64, epsilon: f64): f64 {
   return absB * Math.sqrt(1.0 + (a * a / b / b));
 }
 
-/**
- * Numerically identical to the original nested-array implementation, but keeps
- * `u` (m x n) and `v` (n x n) in flat row-major buffers so hot loops can elide
- * bounds checks with `unchecked(...)`.
- */
 export function svdFlat(A: f64[], m: i32, n: i32): FlatSVD {
   let temp: f64 = 0.0;
   let prec: f64 = 1.0;

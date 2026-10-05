@@ -1,16 +1,11 @@
 'use strict';
 
-// AssemblyScript emits calls to `unchecked(...)` to elide bounds checks in the
-// WASM build. When the same source is transpiled to JavaScript by `tsc`, that
-// helper is not defined, so provide the identity implementation (this is exactly
-// what assemblyscript/std/portable provides). The WASM build never loads this
-// file -- `asc` compiles src/index.ts, not this entry.
+// FIXME: tsc output calls AssemblyScript's `unchecked()` builtin — shim it.
 const g = globalThis;
 if (typeof g.unchecked !== "function") {
     g.unchecked = (value) => value;
 }
 
-/** Flatten a row-major matrix into a contiguous row-major buffer. */
 function flatten(m) {
     const rows = m.length;
     const cols = rows > 0 ? m[0].length : 0;
@@ -23,7 +18,6 @@ function flatten(m) {
     }
     return out;
 }
-/** Reshape a contiguous row-major buffer into a `rows` x `cols` matrix. */
 function reshape(flat, rows, cols) {
     const out = new Array(rows);
     for (let i = 0; i < rows; i++) {
@@ -35,7 +29,6 @@ function reshape(flat, rows, cols) {
     }
     return out;
 }
-/** Copy a contiguous buffer. */
 function copyFlat(a) {
     const out = new Array(a.length);
     for (let i = 0; i < a.length; i++) {
@@ -43,7 +36,6 @@ function copyFlat(a) {
     }
     return out;
 }
-/** Allocate a zero-filled buffer. */
 function zeros(n) {
     const out = new Array(n);
     for (let i = 0; i < n; i++) {
@@ -68,11 +60,6 @@ function pythag(a, b, epsilon) {
     }
     return absB * Math.sqrt(1.0 + (a * a / b / b));
 }
-/**
- * Numerically identical to the original nested-array implementation, but keeps
- * `u` (m x n) and `v` (n x n) in flat row-major buffers so hot loops can elide
- * bounds checks with `unchecked(...)`.
- */
 function svdFlat(A, m, n) {
     let temp = 0.0;
     let prec = 1.0;
@@ -399,7 +386,6 @@ function factor(data) {
         throw new Error("u[0] is null");
     }
     const n = row0.length;
-    // Flatten once; all heavy work happens on contiguous buffers.
     const input = flatten(data);
     const means = new Array(n);
     const stds = new Array(n);
@@ -428,8 +414,7 @@ function factor(data) {
         }
     }
     const result = svdFlat(standardized, m, n);
-    const V = result.V; // n x n, row-major
-    // Factor scores = standardized * V (equivalent to U * S given U*S*Vt = X and Vt*V = I).
+    const V = result.V;
     const factorScores = new Array(m * n);
     for (let i = 0; i < m; i++) {
         for (let j = 0; j < n; j++) {
@@ -440,8 +425,6 @@ function factor(data) {
             factorScores[i * n + j] = sum;
         }
     }
-    // Loadings are the correlation of each variable with each factor. Reuse two
-    // scratch columns instead of allocating per (var, factor) pair.
     const loadings = new Array(n * n);
     const variableCol = new Array(m);
     const factorCol = new Array(m);
