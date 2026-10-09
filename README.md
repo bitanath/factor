@@ -7,16 +7,15 @@ latent **factors**, tells you how much variance each one explains, and gives you
 **factor scores** you can feed into downstream models. `svd()` exposes the underlying
 singular value decomposition if you want it directly.
 
-- Runs in **Node, Bun and the browser**, with ESM, CommonJS and a UMD global build.
+- Runs in **Node and the browser**, with ESM, CommonJS and a UMD global build.
 - Ships **bundled TypeScript types**.
-- Optional **WASM** backend (AssemblyScript) for browser/Bun workloads.
-- Results match the Python references ([factor-analyzer](https://pypi.org/project/factor-analyzer/),
-  NumPy) and the SVD from [pca-js](https://www.npmjs.com/package/pca-js).
+- Optional **WASM** backend (AssemblyScript) for browser workloads.
+- Results match the Python references ([factor-analyzer](https://pypi.org/project/factor-analyzer/), NumPy) and the SVD from [pca-js](https://www.npmjs.com/package/pca-js).
 
 ## Install
 
 ```bash
-npm install factor-js     # or: bun add factor-js
+npm install factor-js
 ```
 
 ## Quickstart
@@ -50,7 +49,7 @@ const { factor, svd } = require("factor-js");
 </script>
 ```
 
-**WASM** (ESM only; faster in Bun and browsers — see the benchmark below)
+**WASM (Assembly script source)**
 
 ```js
 import { factor } from "factor-js/wasm";
@@ -131,27 +130,9 @@ Factor 3:
   guilt          -0.410
 ```
 
-### What the analysis actually says
+So you can probably name the factors as `feelings` or `emotions` for the first, `logic` or `thinking` for the second and `sensory` or 
 
-- **F1 explains ~42% on its own.** 39 of the 40 variables load *positively* on it
-  (`joy` and `depressed` together, `happy` and `angry` together). That is the classic
-  signature of a **general factor** — a broad "rate-everything-high" response tendency
-  rather than a positive-vs-negative mood axis. Always eyeball F1 before naming it.
-- **F2 (~14%) contrasts cognition against interoception.** Mental/verbal items
-  (`computations`, `recognizing`, `remembering`, `reasoning`) load positive, while bodily
-  needs (`hungry`, `pain`) load negative.
-- **F3 (~9%) contrasts the exteroceptive senses against social emotion.** Sight, temperature,
-  smell and hearing load positive; `embarrassed` and `guilt` load negative.
-- **Four factors are worth keeping** (Kaiser criterion: eigenvalue > 1 → `variance × nVars > 1`),
-  together ~68% of the variance. The first ten reach ~78%.
-- **In practice:** you can replace these 40 correlated items with ~4 composite `scores`
-  per respondent for clustering, regression or embedding, losing a third of the (mostly
-  noisy) variance.
-
-> The dataset is a demo fixture, not a validated psychometric instrument — treat the
-> labels above as an example of *reading* the output, not a scientific claim.
-
-### Interpreting the return value
+## Interpreting the return values
 
 | Field | Shape | Meaning |
 |-------|-------|---------|
@@ -162,57 +143,32 @@ Factor 3:
 Eigenvalues are `variance.map(v => v * nVars)`. Factor directions are sign-corrected so each
 factor's loadings sum to a positive value.
 
-## SVD directly
-
-```js
-import { svd } from "factor-js";
-
-// A is rows × columns, with rows >= columns
-const A = [
-  [1, 2],
-  [3, 4],
-  [5, 6],
-];
-
-const { U, S, V } = svd(A);
-// A ≈ U · diag(S) · Vᵀ
-```
 
 ## JavaScript or WASM?
 
 `svd()`/`factor()` do the same math in both builds, and produce **bit-identical** results
 (the test suite cross-checks them). Which is faster depends on the engine:
 
-- **Bun / JavaScriptCore / browsers:** WASM is the better default, especially for the larger,
+- **JavaScriptCore / browsers:** WASM is the better default, especially for the larger,
   more complex cases.
 - **Node / V8:** V8's JIT is extremely good at warm numeric loops, and WASM starts to lose on
   large workloads. Both are fast; pick JS for simplicity.
 
 Median time per call (lower is better; `WASM/JS < 1×` means WASM wins):
 
-**Bun 1.4.2 (Apple Silicon)**
+**Benchmark - Directional non scientific**
 
-| Test | Size | JS | WASM | WASM/JS |
-|------|------|----|------|---------|
-| SVD | 100×10 | 0.11ms | 0.23ms | 2.04× |
-| SVD | 1000×20 | 4.32ms | 2.09ms | 0.48× |
-| SVD | 1000×100 | 53.53ms | 43.24ms | 0.81× |
-| Factor (real data) | 405×40 | 6.03ms | 4.66ms | 0.77× |
-| Factor (random) | 1000×40 | 13.09ms | 12.50ms | 0.95× |
+| Test               | Size     | JS      | WASM     | WASM/JS |
+|--------------------|----------|---------|----------|---------|
+| SVD                | 100×10   | 1.76ms  | 0.28ms   | 0.16×   |
+| SVD                | 1000×20  | 2.17ms  | 4.80ms   | 2.21×   |
+| SVD                | 1000×100 | 54.43ms | 104.44ms | 1.92×   |
+| Factor (real data) | 405×40   | 4.95ms  | 8.84ms   | 1.79×   |
+| Factor (random)    | 1000×40  | 13.23ms | 22.78ms  | 1.72×   |
 
-**Node 22 (V8, Apple Silicon)**
 
-| Test | Size | JS | WASM | WASM/JS |
-|------|------|----|------|---------|
-| SVD | 100×10 | 1.76ms | 0.28ms | 0.16× |
-| SVD | 1000×20 | 2.17ms | 4.80ms | 2.21× |
-| SVD | 1000×100 | 54.43ms | 104.44ms | 1.92× |
-| Factor (real data) | 405×40 | 4.95ms | 8.84ms | 1.79× |
-| Factor (random) | 1000×40 | 13.23ms | 22.78ms | 1.72× |
-
-Reproduce with `npm run bench` under either `node` or `bun`. The WASM backend uses the
-AssemblyScript `minimal` runtime and flat row-major buffers; that is what closed most of the
-historical gap.
+Reproduce with `npm run bench`. The WASM backend uses the
+AssemblyScript `minimal` runtime and flat row-major buffers for the optimization.
 
 ## API
 
