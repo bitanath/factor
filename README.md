@@ -1,6 +1,7 @@
 ## factor-js
 
 Factor analysis (principal factor analysis) and SVD in pure JavaScript and WebAssembly.
+Written in pure [AssemblyScript](https://www.assemblyscript.org) a superset of Typescript.
 
 Given a table of observations, `factor()` reduces correlated variables to a handful of
 latent **factors**, tells you how much variance each one explains, and gives you per-row
@@ -134,11 +135,12 @@ So you can probably name the factors as `feelings` or `emotions` for the first, 
 
 ## Interpreting the return values
 
-| Field | Shape | Meaning |
-|-------|-------|---------|
+| Field      | Shape              | Meaning                                               |
+|------------|--------------------|-------------------------------------------------------|
 | `loadings` | `nVars × nFactors` | Correlation of each **variable** with each **factor** |
-| `variance` | `nFactors` | Share of total variance explained (sums to 1) |
-| `scores` | `nObs × nFactors` | Per-**observation** factor scores |
+| `variance` | `nFactors`         | Share of total variance explained (sums to 1)         |
+| `scores`   | `nObs × nFactors`  | Per-**observation** factor scores                     |
+
 
 Eigenvalues are `variance.map(v => v * nVars)`. Factor directions are sign-corrected so each
 factor's loadings sum to a positive value.
@@ -192,6 +194,11 @@ Singular value decomposition via `A ≈ U · diag(S) · Vᵀ`.
 yourself. `svd()` operates on exactly the matrix you give it.
 
 ## Building and testing
+
+NOTE: TSConfig errors -> You may get tsconfig errors when initially cloning the repo.
+Post build you may get TSConfig deprecation errors, it is recommended to ignore them.
+This is because we cross-build from AssemblyScript (not Typescript) and thus have to use portable code.
+Build should only produce warnings no errors unless something has breaking changes in dev dependencies (unlikely).
 
 ```bash
 npm install

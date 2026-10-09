@@ -1,2 +1,2 @@
-import "./js-runtime";
+import "./jays";
 export * from "./index";

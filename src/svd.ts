@@ -364,7 +364,7 @@ export function svd(A: Matrix): SVDResult {
     throw new Error("Need more rows than columns");
   }
 
-  const result = svdFlat(flatten(A), m, n);
+  const result = svdFlat(flatten(A), m, n); //FIXME demolish the speed slowdown by writing WASM safe version, while returning as close to TS as possible for JS speed.
 
   return {
     U: reshape(result.U, m, n),
