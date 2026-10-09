@@ -1,4 +1,4 @@
-## factor-js
+## 🔢 factor-js
 
 Factor analysis (principal factor analysis) and SVD in pure JavaScript and WebAssembly.
 Written in pure [AssemblyScript](https://www.assemblyscript.org) a superset of Typescript.
