@@ -131,7 +131,8 @@ Factor 3:
   guilt          -0.410
 ```
 
-So you can probably name the factors as `feelings` or `emotions` for the first, `logic` or `thinking` for the second and `sensory` or 
+So you can probably name the factors as `feelings` or `emotions` for the first, `logic` or `thinking` for the second and `sensory` or `tactile` for the last.
+These factors basically group a hierarchy of needs (Study from Mind Perception Framework/Weisman et al.), commonly studied for organizational behavior/psychology tasks.
 
 ## Interpreting the return values
 
@@ -159,6 +160,8 @@ factor's loadings sum to a positive value.
 Median time per call (lower is better; `WASM/JS < 1×` means WASM wins):
 
 **Benchmark - Directional non scientific**
+_On Toy data the WASM slowdown can actually be avoided through rolled loops in svd.ts_
+_However this leads to a massive slowdown in the non toy samples for WASM, check pca.js if you really want this_
 
 | Test               | Size     | JS      | WASM     | WASM/JS |
 |--------------------|----------|---------|----------|---------|
